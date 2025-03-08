@@ -1,0 +1,56 @@
+<!-- src/app/components/navbar/navbar.component.html -->
+<nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <!-- <a id="navbar-brand" class="navbar-brand mx-auto" href="#">My App</a> -->
+    <button id="navbar-toggler" class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+
+    <div id="navbarNav" class="collapse navbar-collapse justify-content-center">
+      <ul class="navbar-nav">
+        <li id="nav-home" class="nav-item">
+          <a class="nav-link" routerLink="/" routerLinkActive="active">Home</a>
+        </li>
+        <!-- Show Login only if not logged in -->
+        <ng-container *ngIf="!isLoggedIn">
+          <li id="nav-login" class="nav-item">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
+          </li>
+        </ng-container>
+        <!-- Show other links if logged in -->
+        <ng-container *ngIf="isLoggedIn">
+          <li id="nav-movements" class="nav-item">
+            <a class="nav-link" routerLink="/movements" routerLinkActive="active">Movements</a>
+          </li>
+          <li id="nav-farms" class="nav-item">
+            <a class="nav-link" routerLink="/farms" routerLinkActive="active">Farms</a>
+          </li>
+          <li id="nav-create-user" class="nav-item">
+            <a class="nav-link" routerLink="/create-user" routerLinkActive="active">Create User</a>
+          </li>
+          <li id="nav-view-movements" class="nav-item">
+            <a class="nav-link" routerLink="/view-movements" routerLinkActive="active">View Movements</a>
+          </li>
+          <li id="nav-logout" class="nav-item">
+            <a class="nav-link" (click)="logout()" style="cursor: pointer;">Logout</a>
+          </li>
+          <!-- Display user role on the right side -->
+        </ng-container>
+      </ul>
+    </div>
+
+    <ng-container *ngIf="isLoggedIn">
+      <!-- Display user role as a button on the right end -->
+      <button id="user-role-btn" class="btn fw-bold" style="color: white; background-color: orange; margin-left: auto;">
+        Role: {{ userRole }}
+      </button>
+    </ng-container>
+
+
+
+
+  </div>
+</nav>

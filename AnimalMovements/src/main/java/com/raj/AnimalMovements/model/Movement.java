@@ -8,11 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "movement")
+@Table(name = "movement", uniqueConstraints = @UniqueConstraint(columnNames = {"newOriginPremId", "newDestinationPremId"}))
 public class Movement {
 
     @Id

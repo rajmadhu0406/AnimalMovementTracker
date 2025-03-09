@@ -25,7 +25,7 @@ export const routes: Routes = [
     path: 'movements', 
     component: MovementsComponent, 
     canActivate: [RoleGuard], 
-    data: { allowedRoles: [ 'USER', 'VIEWER'] } // ADMIN and USER and VIEWER can access
+    data: { allowedRoles: [ 'ADMIN', 'USER', 'VIEWER'] } // ADMIN and USER and VIEWER can access
   },
   { 
     path: 'farms', 

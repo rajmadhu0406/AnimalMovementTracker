@@ -1,4 +1,4 @@
 <!-- error-message.component.html -->
-<div *ngIf="showError" class="error-message">
+<div *ngIf="errorService.errorMessage$ | async as errorMessage" class="alert alert-warning position-fixed top-0 start-50 translate-middle-x mt-2 w-50 text-center shadow">
   {{ errorMessage }}
 </div>

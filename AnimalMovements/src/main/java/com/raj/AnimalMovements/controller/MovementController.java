@@ -2,6 +2,7 @@ package com.raj.AnimalMovements.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,29 +40,36 @@ public class MovementController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public Movement getMovementById(@PathVariable Long id) {
-        return movementService.getMovementById(id).orElse(null) ;
+    public ResponseEntity<Movement>  getMovementById(@PathVariable Long id) {
+        return movementService.getMovementById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/premise/origin/{premiseId}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public Movement getMovementByOriginPremiseId(@PathVariable String premiseId) {
-        return movementService.getMovementByOriginPremId(premiseId);
+    public ResponseEntity<Movement> getMovementByOriginPremiseId(@PathVariable String premiseId) {
+        Movement movement = movementService.getMovementByOriginPremId(premiseId);
+        return movement != null ? ResponseEntity.ok(movement) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/premise/destination/{premiseId}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public Movement getMovementByDestinationPremiseId(@PathVariable String premiseId) {
-        return movementService.getMovementByDestinationPremId(premiseId);
+    public ResponseEntity<Movement> getMovementByDestinationPremiseId(@PathVariable String premiseId) {
+        Movement movement = movementService.getMovementByDestinationPremId(premiseId);
+        return movement != null ? ResponseEntity.ok(movement) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public Movement createMovement(@RequestBody Movement movement) {
-        return movementService.saveMovement(movement);
+    public ResponseEntity<Movement> createMovement(@RequestBody Movement movement) {
+        try {
+            Movement savedMovement = movementService.saveMovement(movement);
+            return ResponseEntity.ok(savedMovement);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // @PutMapping("/{id}")
@@ -74,8 +82,9 @@ public class MovementController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public void deleteMovement(@PathVariable Long id) {
+    public ResponseEntity<String> deleteMovement(@PathVariable Long id) {
         movementService.deleteMovement(id);
+        return ResponseEntity.ok("Movement deleted successfully");
     }
     
 }

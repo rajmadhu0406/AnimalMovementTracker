@@ -1,69 +1,50 @@
-// api.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ApiService {
-  constructor() {}
+  private baseUrl = 'http://localhost:8080/api'; // Base API URL
 
-  // Generic fetch method to handle different HTTP methods
-  async fetchData(
-    url: string,
-    method: string = 'GET',
-    body: any = null,
-    headers: { [key: string]: string } = {}
-  ): Promise<any> {
+  constructor() { }
+
+  // Generic method for sending API requests
+  async request(method: string, endpoint: string, body: any = null, authToken: string | null = null): Promise<any> {
+    const url = `${this.baseUrl}/${endpoint}`;
+    const headers: HeadersInit = { 'Content-Type': 'application/json' };
+
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+
+    const options: RequestInit = {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null
+    };
+
     try {
-      const options: RequestInit = {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers, // Add custom headers (e.g., Bearer token)
-        },
-      };
-
-      // Add body for POST/PUT requests
-      if (body && (method === 'POST' || method === 'PUT')) {
-        options.body = JSON.stringify(body);
-      }
-
       const response = await fetch(url, options);
 
-      // Check if the response is OK (status 200-299)
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'An error occurred');
+        const errorMessage = await response.text(); // Read text response (if error)
+        throw new Error(errorMessage || `HTTP error! Status: ${response.status}`);
       }
 
-      return await response.json(); // Parse and return the response data
-    } catch (error) {
-      throw error; // Re-throw the error for handling in components
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json(); // Parse JSON response
+      } else {
+        return await response.text(); // Return plain text response
+      }
+
+      // return response.status !== 204 ? response.json() : null;
+
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unknown error occurred');
     }
-  }
-
-  // Convenience methods for different HTTP methods
-  get(url: string, headers: { [key: string]: string } = {}): Promise<any> {
-    return this.fetchData(url, 'GET', null, headers);
-  }
-
-  post(
-    url: string,
-    body: any,
-    headers: { [key: string]: string } = {}
-  ): Promise<any> {
-    return this.fetchData(url, 'POST', body, headers);
-  }
-
-  put(
-    url: string,
-    body: any,
-    headers: { [key: string]: string } = {}
-  ): Promise<any> {
-    return this.fetchData(url, 'PUT', body, headers);
-  }
-
-  delete(url: string, headers: { [key: string]: string } = {}): Promise<any> {
-    return this.fetchData(url, 'DELETE', null, headers);
   }
 }

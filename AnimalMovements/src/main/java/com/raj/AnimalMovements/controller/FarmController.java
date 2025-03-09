@@ -76,9 +76,9 @@ public class FarmController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> deleteFarm(@PathVariable Long id) {
+    public ResponseEntity<String> deleteFarm(@PathVariable Long id) {
         farmService.deleteFarm(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Farm deleted successfully");
     }
     
     

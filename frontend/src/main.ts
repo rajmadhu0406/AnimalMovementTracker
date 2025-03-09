@@ -8,6 +8,6 @@ import { importProvidersFrom } from '@angular/core';
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
-    importProvidersFrom(NgbModule)
+    importProvidersFrom(NgbModule),
   ]
 });

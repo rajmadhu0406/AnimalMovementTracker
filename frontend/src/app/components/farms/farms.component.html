@@ -1,1 +1,50 @@
-<p>farms works!</p>
+<!-- src/app/components/farms/farms.component.html -->
+<div class="container mt-4">
+    <!-- Header with "Create Farm" button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>Farms</h2>
+      <button class="btn btn-primary" (click)="toggleCreateForm()">Create Farm</button>
+    </div>
+  
+    <!-- Create Farm Form -->
+    <div *ngIf="showCreateForm" class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Create Farm</h5>
+        <form (ngSubmit)="createFarm()">
+          <div class="mb-3">
+            <label for="premiseId" class="form-label">Premise ID</label>
+            <input type="text" id="premiseId" class="form-control"
+                   [(ngModel)]="newFarm.premiseId" name="premiseId" required>
+          </div>
+          <div class="mb-3">
+            <label for="totalAnimal" class="form-label">Total Animals</label>
+            <input type="number" id="totalAnimal" class="form-control"
+                   [(ngModel)]="newFarm.totalAnimal" name="totalAnimal" required min="0">
+          </div>
+          <button type="submit" class="btn btn-success">Submit</button>
+          <button type="button" class="btn btn-secondary ms-2" (click)="toggleCreateForm()">Cancel</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Farms Table -->
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Premise ID</th>
+          <th>Total Animals</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let farm of farms">
+          <td>{{ farm.premiseId }}</td>
+          <td>{{ farm.totalAnimal }}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="deleteFarm(farm.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

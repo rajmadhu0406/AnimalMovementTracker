@@ -163,6 +163,8 @@ export class ViewMovementsComponent implements OnInit {
             <b>Species:</b> ${movement.newSpecies}<br>
             <b>Company:</b> ${movement.accountCompany}<br>
             <b>Reason:</b> ${movement.newMovementReason}<br>
+            <b>Origin:</b> ${origin.name}<br>
+            <b>Destination:</b> ${destination.name}<br>
             <b>Date:</b> ${new Date(movement.newShipmentsStartDate).toDateString()}
           `)
           .addTo(this.map); //Fix: Ensure `this.map` is defined

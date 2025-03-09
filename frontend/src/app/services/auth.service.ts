@@ -1,7 +1,7 @@
 // src/app/services/auth.service.ts
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +9,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class AuthService {
   private authUrl = 'http://localhost:8080/api/auth/login';
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
-  private jwtPayload = new BehaviorSubject<any>(null); 
+  private jwtPayload = new BehaviorSubject<any>(null);
 
-  constructor() {
-  }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
 
   login(credentials: { username: string; password: string }): Promise<any> {
@@ -59,7 +58,7 @@ export class AuthService {
   }
 
   private decodeJwtPayload(token: string): any {
-    if(!token){
+    if (!token) {
       return null;
     }
     const base64Url = token.split('.')[1];
@@ -86,16 +85,17 @@ export class AuthService {
 
   // Get the current JWT payload
   getJwtPayload(): any {
-    if(!this.jwtPayload || !this.jwtPayload.value || this.jwtPayload.value == null){
-      this.setJwtPayload(localStorage.getItem('token') || '');
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        return this.decodeJwtPayload(token); // Decode the JWT payload
+      }
     }
-    return this.jwtPayload.value;
+    return null;
   }
-  
+
   hasPermission(allowedRoles: string[]): boolean {
     const payload = this.getJwtPayload();
-    console.log(payload?.role);
-    console.log("allowedRoles : ", allowedRoles);
     return this.isLoggedIn() && allowedRoles.includes(payload?.role);
   }
 }

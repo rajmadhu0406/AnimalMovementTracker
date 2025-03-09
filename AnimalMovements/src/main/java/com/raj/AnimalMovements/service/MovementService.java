@@ -42,6 +42,10 @@ public class MovementService {
             throw new RuntimeException("Origin and destination farms cannot be the same");
         }
 
+        if(originFarm.getTotalAnimal() < movement.getNewNumItemsMoved()) {
+            throw new RuntimeException("Origin farm does not have enough animals to move");
+        }
+
         originFarm.setTotalAnimal(originFarm.getTotalAnimal() - movement.getNewNumItemsMoved());
         destinationFarm.setTotalAnimal(destinationFarm.getTotalAnimal() + movement.getNewNumItemsMoved());
         

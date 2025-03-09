@@ -20,14 +20,14 @@ import com.raj.AnimalMovements.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class UserService implements UserDetailsService{
+public class UserService implements UserDetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleService roleService  ) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
@@ -43,26 +43,29 @@ public class UserService implements UserDetailsService{
             throw new RuntimeException("Email already exists");
         }
 
-        if(user.getRole().getRoleType() != null){
-            Role role = roleService.getRoleByType(user.getRole().getRoleType()).orElseThrow();
+        if (user.getRole().getRoleType() != null) {
+            Role role = roleService.getRoleByType(user.getRole().getRoleType())
+                    .orElseThrow(() -> new RuntimeException("Invalid role type: " + user.getRole().getRoleType()));
             user.setRole(role);
-        }
-        else if(user.getRole().getId() != null){
+
+        } else if (user.getRole().getId() != null) {
             Role role = roleService.getRoleById(user.getRole().getId()).orElseThrow();
             user.setRole(role);
+        } else {
+            logger.error("User has no role: {}", user.getUsername());
+            throw new RuntimeException("User has no role");
         }
-        
+
         // encoding the password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
-        try{
+
+        try {
             return userRepository.save(user);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             logger.error("Error creating user: {}", e.getMessage());
             throw new RuntimeException("Error creating user: " + e.getMessage());
         }
-        
+
     }
 
     public User getUserById(Long id) {
@@ -121,7 +124,6 @@ public class UserService implements UserDetailsService{
         logger.info("User deleted successfully: {}", id);
     }
 
-
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
@@ -140,13 +142,13 @@ public class UserService implements UserDetailsService{
         if (user.getRole() != null) {
             // Note: Spring Security expects roles to be prefixed with "ROLE_"
             authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleType().name()));
-        }
-        else{
+        } else {
             logger.error("User has no role: {}", user.getUsername());
             throw new RuntimeException("User has no role");
         }
 
-        // Return a Spring Security User object containing the username, password, and granted authorities
+        // Return a Spring Security User object containing the username, password, and
+        // granted authorities
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),

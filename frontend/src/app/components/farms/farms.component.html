@@ -3,7 +3,7 @@
   <!-- Header with "Create Farm" button -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Farms</h2>
-    <button class="btn btn-primary" (click)="toggleCreateForm()">Create Farm</button>
+    <button class="btn btn-primary" (click)="toggleCreateForm()" *ngIf="hasPermission('ADMIN')">Create Farm</button>
   </div>
 
   <!-- Create Farm Form -->
@@ -74,7 +74,7 @@
         <th>City</th>
         <th>Name</th>
         <th>Postal Code</th>
-        <th>Actions</th>
+        <th *ngIf="hasPermission('ADMIN')">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -89,7 +89,7 @@
         <td>{{ farm.name }}</td>
         <td>{{ farm.postalCode }}</td>
         <td>
-          <button class="btn btn-danger btn-sm" (click)="deleteFarm(farm.id)">Delete</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteFarm(farm.id)" *ngIf="hasPermission('ADMIN')">Delete</button>
         </td>
       </tr>
     </tbody>

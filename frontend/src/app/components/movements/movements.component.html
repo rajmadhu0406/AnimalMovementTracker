@@ -3,7 +3,7 @@
   <!-- Header with "Create Movement" button -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Movements</h2>
-    <button class="btn btn-primary" (click)="toggleCreateForm()">Create Movement</button>
+    <button class="btn btn-primary" (click)="toggleCreateForm()" *ngIf="hasPermission('ADMIN') || hasPermission('USER')">Create Movement</button>
   </div>
 
   <!-- Create Movement Form -->
@@ -34,11 +34,11 @@
         <div class="row">
           <div class="col-md-6 mb-3">
             <label class="form-label">Origin Premise ID</label>
-            <input type="text" class="form-control" [(ngModel)]="newMovement.newOriginFarm" name="newOriginFarm" required>
+            <input type="text" class="form-control" [(ngModel)]="newMovement.newOriginFarm.premiseId" name="newOriginFarm" required>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label">Destination Premise ID</label>
-            <input type="text" class="form-control" [(ngModel)]="newMovement.newDestinationFarm" name="newDestinationFarm" required>
+            <input type="text" class="form-control" [(ngModel)]="newMovement.newDestinationFarm.premiseId" name="newDestinationFarm" required>
           </div>
         </div>
         <div class="mb-3">
@@ -62,7 +62,7 @@
         <th>Destination Premise ID</th>
         <th>Items Moved</th>
         <th>Shipment Start Date</th>
-        <th>Actions</th>
+        <th *ngIf="hasPermission('ADMIN')">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -70,14 +70,45 @@
         <td>{{ movement.accountCompany }}</td>
         <td>{{ movement.newMovementReason }}</td>
         <td>{{ movement.newSpecies }}</td>
-        <td>{{ movement.newOriginFarm.premiseId }}</td>
-        <td>{{ movement.newDestinationFarm.premiseId }}</td>
+        <td>
+          <a href="#" (click)="openFarmModal(movement.newOriginFarm.premiseId)" data-bs-toggle="modal" data-bs-target="#farmModal">
+            {{ movement.newOriginFarm.premiseId }}
+          </a>
+        </td>
+        <td>
+          <a href="#" (click)="openFarmModal(movement.newDestinationFarm.premiseId)" data-bs-toggle="modal" data-bs-target="#farmModal">
+            {{ movement.newDestinationFarm.premiseId }}
+          </a>
+        </td>
         <td>{{ movement.newNumItemsMoved }}</td>
         <td>{{ movement.newShipmentsStartDate | date }}</td>
         <td>
-          <button class="btn btn-danger btn-sm" (click)="deleteMovement(movement)">Delete</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteMovement(movement)" *ngIf="hasPermission('ADMIN')">Delete</button>
         </td>
       </tr>
     </tbody>
   </table>
+</div>
+
+<!-- ootstrap Modal for Farm Details -->
+<div class="modal fade" id="farmModal" tabindex="-1" aria-labelledby="farmModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="farmModalLabel">Farm Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedFarm">
+        <p><strong>Premise ID:</strong> {{ selectedFarm.premiseId }}</p>
+        <p><strong>Total Animals:</strong> {{ selectedFarm.totalAnimal }}</p>
+        <p><strong>Latitude:</strong> {{ selectedFarm.latitude }}</p>
+        <p><strong>Longitude:</strong> {{ selectedFarm.longitude }}</p>
+        <p><strong>Address:</strong> {{ selectedFarm.address }}</p>
+        <p><strong>State:</strong> {{ selectedFarm.state }}</p>
+        <p><strong>City:</strong> {{ selectedFarm.city }}</p>
+        <p><strong>Name:</strong> {{ selectedFarm.name }}</p>
+        <p><strong>Postal Code:</strong> {{ selectedFarm.postalCode }}</p>
+      </div>
+    </div>
+  </div>
 </div>

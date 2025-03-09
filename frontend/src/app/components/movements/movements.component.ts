@@ -18,6 +18,7 @@ export class MovementsComponent implements OnInit {
   showCreateForm = false; // Controls form visibility
   newMovement = this.getEmptyMovement();
   authToken: string | null = null; // Authentication token
+  selectedFarm: any = null; // Stores selected farm details
 
   constructor(private apiService: ApiService, private errorService: ErrorService, private authService: AuthService) {}
 
@@ -48,7 +49,7 @@ export class MovementsComponent implements OnInit {
     if (!confirm('Are you sure you want to delete this movement?')) return;
 
     try {
-      await this.apiService.request('DELETE', `movement/${movement.newOriginFarm.premiseId}/${movement.newDestinationFarm.premiseId}`, null, this.authToken);
+      await this.apiService.request('DELETE', `movement/${movement.id}`, null, this.authToken);
       this.movements = this.movements.filter(m => m !== movement);
       this.errorService.setErrorMessage('Movement deleted successfully.');
     } catch (error) {
@@ -74,6 +75,15 @@ export class MovementsComponent implements OnInit {
     }
   }
 
+  // Open modal and fetch farm details
+  async openFarmModal(premiseId: string): Promise<void> {
+    try {
+      this.selectedFarm = await this.apiService.request('GET', `farm/premise/${premiseId}`, null, this.authToken);
+    } catch (error) {
+      this.errorService.setErrorMessage(error instanceof Error ? error.message : 'Failed to fetch farm details.');
+    }
+  }
+
   //Get an empty movement object for resetting the form
   getEmptyMovement() {
     return {
@@ -82,13 +92,17 @@ export class MovementsComponent implements OnInit {
       newSpecies: '',
       newNumItemsMoved: 0,
       newShipmentsStartDate: new Date().toISOString(),
-      newOriginFarm: '',
-      newDestinationFarm: ''
+      newOriginFarm: {premiseId: ''},
+      newDestinationFarm: {premiseId: ''}
     };
   }
 
   // Toggle form visibility
   toggleCreateForm(): void {
     this.showCreateForm = !this.showCreateForm;
+  }
+
+  hasPermission(allowedRoles: string): boolean {
+    return this.authService.hasPermission([allowedRoles]);
   }
 }

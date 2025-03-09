@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     // }
 
-    // ✅ Handles Validation Errors at the Controller Level (@Valid in RequestBody)
+    //  Handles Validation Errors at the Controller Level (@Valid in RequestBody)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    // ✅ Handles Validation Errors Triggered by Hibernate at Persist Time
+    // Handles Validation Errors Triggered by Hibernate at Persist Time
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<Map<String, Object>> handleTransactionSystemException(TransactionSystemException ex) {
         Throwable cause = ex.getRootCause();
@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
-    // ✅ Handles Hibernate Validation Errors
+    // Handles Hibernate Validation Errors
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, Object>> handleConstraintViolationException(ConstraintViolationException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    // ✅ Handles Unique Constraint Violations (e.g., duplicate Premise ID)
+    //  Handles Unique Constraint Violations (e.g., duplicate Premise ID)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         Map<String, String> response = new HashMap<>();
@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
-    // ✅ Handles General Exceptions
+    //  Handles General Exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
         Map<String, String> response = new HashMap<>();

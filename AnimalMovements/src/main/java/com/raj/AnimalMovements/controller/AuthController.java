@@ -16,8 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raj.AnimalMovements.security.JwtTokenUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Auth API", description = "APIs for Authentication")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -34,12 +38,8 @@ public class AuthController {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    @GetMapping("/")
-    public String test() {
-        return "Hello World";
-    }
-
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Login to the application")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
         try {

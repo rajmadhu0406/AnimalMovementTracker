@@ -95,6 +95,11 @@ export class FarmsComponent implements OnInit {
     }
   }
 
+  hasPermission(allowedRoles: string): boolean {
+    return this.authService.hasPermission([allowedRoles]);
+  }
+
+
   // Get an empty farm object for resetting the form
   getEmptyFarm() {
     return {

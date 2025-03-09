@@ -1,68 +1,83 @@
 <div class="container mt-4">
   
-    <!-- Header & Create Button -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2>Movements</h2>
-      <button class="btn btn-primary" (click)="toggleCreateForm()">Create Movement</button>
-    </div>
-  
-    <!-- Create Movement Form -->
-    <div *ngIf="showCreateForm" class="card mb-4">
-      <div class="card-body">
-        <h5 class="card-title">Create Movement</h5>
-        <form (ngSubmit)="createMovement()">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Account Company</label>
-              <input type="text" class="form-control" [(ngModel)]="newMovement.accountCompany" name="accountCompany" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Movement Reason</label>
-              <input type="text" class="form-control" [(ngModel)]="newMovement.newMovementReason" name="newMovementReason" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Origin Premise ID</label>
-              <input type="text" class="form-control" [(ngModel)]="newMovement.newOriginPremId" name="newOriginPremId" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Destination Premise ID</label>
-              <input type="text" class="form-control" [(ngModel)]="newMovement.newDestinationPremId" name="newDestinationPremId" required>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-success">Submit</button>
-          <button type="button" class="btn btn-secondary ms-2" (click)="toggleCreateForm()">Cancel</button>
-        </form>
-      </div>
-    </div>
-  
-    <!-- Movements Table -->
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Account Company</th>
-          <th>Origin Premise ID</th>
-          <th>Destination Premise ID</th>
-          <th>Items Moved</th>
-          <th>Shipment Start Date</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let movement of movements">
-          <td>{{ movement.id }}</td>
-          <td>{{ movement.accountCompany }}</td>
-          <td>{{ movement.newOriginPremId }}</td>
-          <td>{{ movement.newDestinationPremId }}</td>
-          <td>{{ movement.newNumItemsMoved }}</td>
-          <td>{{ movement.newShipmentsStartDate | date }}</td>
-          <td>
-            <button class="btn btn-danger btn-sm" (click)="movement.id && deleteMovement(movement.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Header with "Create Movement" button -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Movements</h2>
+    <button class="btn btn-primary" (click)="toggleCreateForm()">Create Movement</button>
   </div>
-  
+
+  <!-- Create Movement Form -->
+  <div *ngIf="showCreateForm" class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Create Movement</h5>
+      <form (ngSubmit)="createMovement()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Account Company</label>
+            <input type="text" class="form-control" [(ngModel)]="newMovement.accountCompany" name="accountCompany" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Movement Reason</label>
+            <input type="text" class="form-control" [(ngModel)]="newMovement.newMovementReason" name="newMovementReason" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Species</label>
+            <input type="text" class="form-control" [(ngModel)]="newMovement.newSpecies" name="newSpecies" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Number of Items Moved</label>
+            <input type="number" class="form-control" [(ngModel)]="newMovement.newNumItemsMoved" name="newNumItemsMoved" required min="0">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Origin Premise ID</label>
+            <input type="text" class="form-control" [(ngModel)]="newMovement.newOriginFarm" name="newOriginFarm" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Destination Premise ID</label>
+            <input type="text" class="form-control" [(ngModel)]="newMovement.newDestinationFarm" name="newDestinationFarm" required>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Shipment Start Date</label>
+          <input type="date" class="form-control" [(ngModel)]="newMovement.newShipmentsStartDate" name="newShipmentsStartDate" required>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+        <button type="button" class="btn btn-secondary ms-2" (click)="toggleCreateForm()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Movements Table -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Account Company</th>
+        <th>Movement Reason</th>
+        <th>Species</th>
+        <th>Origin Premise ID</th>
+        <th>Destination Premise ID</th>
+        <th>Items Moved</th>
+        <th>Shipment Start Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let movement of movements">
+        <td>{{ movement.accountCompany }}</td>
+        <td>{{ movement.newMovementReason }}</td>
+        <td>{{ movement.newSpecies }}</td>
+        <td>{{ movement.newOriginFarm.premiseId }}</td>
+        <td>{{ movement.newDestinationFarm.premiseId }}</td>
+        <td>{{ movement.newNumItemsMoved }}</td>
+        <td>{{ movement.newShipmentsStartDate | date }}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" (click)="deleteMovement(movement)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

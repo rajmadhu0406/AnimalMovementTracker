@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,42 +32,44 @@ public class MovementController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public List<Movement> getAllMovements() {
-        return movementService.getAllMovements();
+    public ResponseEntity<List<Movement>> getAllMovements() {
+        return ResponseEntity.ok(movementService.getAllMovements());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Movement>  getMovementById(@PathVariable Long id) {
-        return movementService.getMovementById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Movement> getMovementById(@PathVariable Long id) {
+        return movementService.getMovementById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/premise/origin/{premiseId}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Movement> getMovementByOriginPremiseId(@PathVariable String premiseId) {
-        Movement movement = movementService.getMovementByOriginPremId(premiseId);
-        return movement != null ? ResponseEntity.ok(movement) : ResponseEntity.notFound().build();
+    public ResponseEntity<List<Movement>> getMovementsByOriginPremiseId(@PathVariable String premiseId) {
+        List<Movement> movements = movementService.getMovementsByOriginFarm(premiseId);
+        return movements.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(movements);
     }
 
     @GetMapping("/premise/destination/{premiseId}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Movement> getMovementByDestinationPremiseId(@PathVariable String premiseId) {
-        Movement movement = movementService.getMovementByDestinationPremId(premiseId);
-        return movement != null ? ResponseEntity.ok(movement) : ResponseEntity.notFound().build();
+    public ResponseEntity<List<Movement>> getMovementsByDestinationPremiseId(@PathVariable String premiseId) {
+        List<Movement> movements = movementService.getMovementsByDestinationFarm(premiseId);
+        return movements.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(movements);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Movement> createMovement(@RequestBody Movement movement) {
+    public ResponseEntity<?> createMovement(@RequestBody Movement movement) {
         try {
-            Movement savedMovement = movementService.saveMovement(movement);
+            Movement savedMovement = movementService.createMovement(movement);
             return ResponseEntity.ok(savedMovement);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

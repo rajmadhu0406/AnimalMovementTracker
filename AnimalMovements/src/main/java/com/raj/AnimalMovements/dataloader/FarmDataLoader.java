@@ -1,26 +1,25 @@
 package com.raj.AnimalMovements.dataloader;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.raj.AnimalMovements.model.Farm;
+import com.raj.AnimalMovements.service.FarmService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.raj.AnimalMovements.model.Farm;
-import com.raj.AnimalMovements.service.FarmService;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Component
 public class FarmDataLoader implements CommandLineRunner, Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(FarmDataLoader.class);
-
     private final FarmService farmService;
 
     public FarmDataLoader(FarmService farmService) {
@@ -28,74 +27,111 @@ public class FarmDataLoader implements CommandLineRunner, Ordered {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         logger.info("Loading farm data...");
         String csvFilePath = "src/main/resources/data/population.csv";
         loadFarmDataFromCsv(csvFilePath);
         logger.info("Farm data loaded successfully");
-    }   
-    
+    }
+
     public void loadFarmDataFromCsv(String filePath) {
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
-            // Parse the CSV file
             CsvToBean<FarmCsvRecord> csvToBean = new CsvToBeanBuilder<FarmCsvRecord>(reader)
                     .withType(FarmCsvRecord.class)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
-            // Convert CSV records to FarmCsvRecord objects
             csvToBean.parse().forEach(record -> {
-                // Check if a farm with the same premiseId already exists
-                if (farmService.getFarmByPremiseId(record.getPremiseId()) == null) {
-                    // If it doesn't exist, create and save the farm
+                logger.debug("Processing record: {}", record);
+
+                // Check if farm already exists
+                Farm existingFarm = farmService.getFarmByPremiseId(record.getPremiseId());
+                if (existingFarm == null) {
                     Farm farm = new Farm();
                     farm.setPremiseId(record.getPremiseId());
                     farm.setTotalAnimal(record.getTotalAnimal());
+                    farm.setLatitude(record.getLatitude());
+                    farm.setLongitude(record.getLongitude());
+                    farm.setAddress(record.getAddress());
+                    farm.setState(record.getState());
+                    farm.setCity(record.getCity());
+                    farm.setName(record.getName());
+                    farm.setPostalCode(record.getPostalCode());
+
                     farmService.saveFarm(farm);
                     logger.info("Saved farm with premiseId: {}", record.getPremiseId());
                 } else {
-                    // If it exists, skip saving
                     logger.info("Farm with premiseId: {} already exists, skipping...", record.getPremiseId());
                 }
             });
 
-            logger.info("Farm data loaded successfully!");
+            logger.info("Farm data loading completed!");
 
         } catch (IOException e) {
             logger.error("Error reading the CSV file: {}", e.getMessage());
         }
     }
 
-
-    // Inner class to represent a single row in the CSV file
+    // Inner class representing a row in the CSV file
     public static class FarmCsvRecord {
+        @CsvBindByName(column = "premise_id")
         private String premiseId;
-        private int total_animal;
 
-        // Getters and setters
-        public String getPremiseId() {
-            return premiseId;
-        }
+        @CsvBindByName(column = "total_animal")
+        private int totalAnimal;
 
-        public void setPremiseId(String premiseId) {
-            this.premiseId = premiseId;
-        }
+        @CsvBindByName(column = "latitude")
+        private Double latitude;
 
-        public int getTotalAnimal() {
-            return total_animal;
-        }
+        @CsvBindByName(column = "longitude")
+        private Double longitude;
 
-        public void setTotalAnimal(int total_animal) {
-            this.total_animal = total_animal;
-        }
+        @CsvBindByName(column = "address")
+        private String address;
+
+        @CsvBindByName(column = "state")
+        private String state;
+
+        @CsvBindByName(column = "city")
+        private String city;
+
+        @CsvBindByName(column = "name")
+        private String name;
+
+        @CsvBindByName(column = "postal_code")
+        private String postalCode;
+
+        // Getters and Setters
+        public String getPremiseId() { return premiseId; }
+        public void setPremiseId(String premiseId) { this.premiseId = premiseId; }
+
+        public int getTotalAnimal() { return totalAnimal; }
+        public void setTotalAnimal(int totalAnimal) { this.totalAnimal = totalAnimal; }
+
+        public Double getLatitude() { return latitude; }
+        public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+        public Double getLongitude() { return longitude; }
+        public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+        public String getAddress() { return address; }
+        public void setAddress(String address) { this.address = address; }
+
+        public String getState() { return state; }
+        public void setState(String state) { this.state = state; }
+
+        public String getCity() { return city; }
+        public void setCity(String city) { this.city = city; }
+
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+
+        public String getPostalCode() { return postalCode; }
+        public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
     }
-
 
     @Override
     public int getOrder() {
-        return 3; //lower value means higher priority
+        return 3; // Lower value means higher priority
     }
-
-    
-
 }

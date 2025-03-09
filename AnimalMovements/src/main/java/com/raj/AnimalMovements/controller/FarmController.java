@@ -33,15 +33,17 @@ public class FarmController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public Farm createFarm(@RequestBody Farm farm) {
-        return farmService.saveFarm(farm);
+    public ResponseEntity<Farm> createFarm(@RequestBody Farm farm) {
+        Farm savedFarm = farmService.saveFarm(farm);
+        return ResponseEntity.ok(savedFarm);
     }
 
+    
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public List<Farm> getAllFarms() {
-        return farmService.getAllFarms();
+    public ResponseEntity<List<Farm>> getAllFarms() {
+        return ResponseEntity.ok(farmService.getAllFarms());
     }
 
     @GetMapping("/{id}")

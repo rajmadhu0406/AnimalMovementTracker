@@ -12,7 +12,7 @@ import com.raj.AnimalMovements.repository.FarmRepository;
 
 @Service
 public class FarmService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(FarmService.class);
 
     private final FarmRepository farmRepository;
@@ -20,7 +20,6 @@ public class FarmService {
     public FarmService(FarmRepository farmRepository) {
         this.farmRepository = farmRepository;
     }
-    
 
     public Farm saveFarm(Farm farm) {
         return farmRepository.save(farm);
@@ -35,7 +34,6 @@ public class FarmService {
     public Optional<Farm> getFarmById(Long id) {
         return farmRepository.findById(id);
     }
-    
 
     // Get a farm by premiseId
     public Farm getFarmByPremiseId(String premiseId) {
@@ -46,8 +44,18 @@ public class FarmService {
     public Farm updateFarm(Long id, Farm farmDetails) {
         Farm farm = farmRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Farm not found with id: " + id));
+
+        // Update all fields
         farm.setPremiseId(farmDetails.getPremiseId());
         farm.setTotalAnimal(farmDetails.getTotalAnimal());
+        farm.setLatitude(farmDetails.getLatitude());
+        farm.setLongitude(farmDetails.getLongitude());
+        farm.setAddress(farmDetails.getAddress());
+        farm.setState(farmDetails.getState());
+        farm.setCity(farmDetails.getCity());
+        farm.setName(farmDetails.getName());
+        farm.setPostalCode(farmDetails.getPostalCode());
+
         return farmRepository.save(farm);
     }
 
@@ -55,5 +63,5 @@ public class FarmService {
     public void deleteFarm(Long id) {
         farmRepository.deleteById(id);
     }
-    
+
 }

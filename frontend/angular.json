@@ -110,6 +110,22 @@
               "node_modules/bootstrap/dist/js/bootstrap.min.js"
             ]
           }
+        },
+        "e2e": {
+          "builder": "cypress",
+          "options": {
+            "devServerTarget": "frontend:serve",
+            "cypressConfig": "cypress.config.js",
+            "headless": false,
+            "watch": true
+          }
+        },
+        "serve:e2e": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "port": 4200,
+            "proxyConfig": "proxy.conf.json"
+          }
         }
       }
     }

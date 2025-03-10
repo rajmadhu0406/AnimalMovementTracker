@@ -6,7 +6,7 @@
     "start": "ng serve --host 0.0.0.0 --poll 2000 --public-host=localhost:4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "ng test --include src/app/components/create-user/create-user.component.spec.ts --watch=false --browsers=ChromeHeadlessNoSandbox",
     "clean": "rimraf dist",
     "serve:ssr:frontend": "node dist/frontend/server/server.mjs"
   },

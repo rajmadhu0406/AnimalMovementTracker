@@ -1,9 +1,10 @@
 package com.raj.AnimalMovements.exception;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,9 +15,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,13 +34,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    // @ExceptionHandler(MethodArgumentNotValidException.class)
-    // public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-    //     Map<String, String> errors = new HashMap<>();
-    //     ex.getBindingResult().getFieldErrors().forEach(error ->
-    //             errors.put(error.getField(), error.getDefaultMessage()));
-    //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    // }
 
     //  Handles Validation Errors at the Controller Level (@Valid in RequestBody)
     @ExceptionHandler(MethodArgumentNotValidException.class)

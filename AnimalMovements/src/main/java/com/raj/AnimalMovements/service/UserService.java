@@ -32,23 +32,31 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
     }
-
+    /**
+     * Create a new user and ensure the username and email do not already exist.
+     * If the user has a role, validate the role type and save the user.
+     * If the user has no role, throw an exception.
+     */
     public User createUser(User user) {
+        // Check if the username already exists
         if (userRepository.existsByUsername(user.getUsername())) {
             logger.error("Username already exists: {}", user.getUsername());
             throw new RuntimeException("Username already exists");
         }
+        // Check if the email already exists
         if (userRepository.existsByEmail(user.getEmail())) {
             logger.error("Email already exists: {}", user.getEmail());
             throw new RuntimeException("Email already exists");
         }
 
+        // Validate the role type
         if (user.getRole().getRoleType() != null) {
             Role role = roleService.getRoleByType(user.getRole().getRoleType())
                     .orElseThrow(() -> new RuntimeException("Invalid role type: " + user.getRole().getRoleType()));
             user.setRole(role);
 
         } else if (user.getRole().getId() != null) {
+            // Validate the role ID
             Role role = roleService.getRoleById(user.getRole().getId()).orElseThrow();
             user.setRole(role);
         } else {
@@ -68,6 +76,7 @@ public class UserService implements UserDetailsService {
 
     }
 
+    // Get a user by ID
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> {
@@ -79,13 +88,15 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User updateUser(Long id, User updatedUser) {
         return userRepository.findById(id).map(existingUser -> {
-            // Update user details (if provided)
+            // Update first name if provided
             if (updatedUser.getFirstName() != null) {
                 existingUser.setFirstName(updatedUser.getFirstName());
             }
+            // Update last name if provided
             if (updatedUser.getLastName() != null) {
                 existingUser.setLastName(updatedUser.getLastName());
             }
+            // Update email if provided and not already taken
             if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(existingUser.getEmail())) {
                 if (userRepository.existsByEmail(updatedUser.getEmail())) {
                     logger.error("Email already exists: {}", updatedUser.getEmail());
@@ -93,6 +104,7 @@ public class UserService implements UserDetailsService {
                 }
                 existingUser.setEmail(updatedUser.getEmail());
             }
+            // Update username if provided and not already taken
             if (updatedUser.getUsername() != null && !updatedUser.getUsername().equals(existingUser.getUsername())) {
                 if (userRepository.existsByUsername(updatedUser.getUsername())) {
                     logger.error("Username already exists: {}", updatedUser.getUsername());
@@ -100,16 +112,20 @@ public class UserService implements UserDetailsService {
                 }
                 existingUser.setUsername(updatedUser.getUsername());
             }
+            // Update password if provided
             if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             }
+            // Update role if provided
             if (updatedUser.getRole() != null) {
                 existingUser.setRole(updatedUser.getRole());
             }
 
             logger.info("User updated successfully: {}", id);
+            // Save and return the updated user
             return userRepository.save(existingUser);
         }).orElseThrow(() -> {
+            // Handle user not found
             logger.error("User not found with ID: {}", id);
             return new RuntimeException("User not found with ID: " + id);
         });

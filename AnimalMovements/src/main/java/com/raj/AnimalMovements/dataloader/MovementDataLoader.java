@@ -21,6 +21,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * The MovementDataLoader class loads movement data from a CSV file and populates the database.
+ * It uses the CsvToBean library to parse the CSV file and save the data in the database.
+ */
 @Component
 public class MovementDataLoader implements CommandLineRunner, Ordered {
 
@@ -34,6 +38,7 @@ public class MovementDataLoader implements CommandLineRunner, Ordered {
         this.farmService = farmService;
     }
 
+    // This method is executed when the application starts
     @Override
     public void run(String... args) {
         logger.info("Loading movement data...");
@@ -42,6 +47,7 @@ public class MovementDataLoader implements CommandLineRunner, Ordered {
         logger.info("Movement data loaded successfully");
     }
 
+    // This method loads movement data from a CSV file
     public void loadMovementDataFromCsv(String filePath) {
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             CsvToBean<MovementCsvRecord> csvToBean = new CsvToBeanBuilder<MovementCsvRecord>(reader)

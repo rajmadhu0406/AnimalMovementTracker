@@ -13,6 +13,11 @@ import com.raj.AnimalMovements.repository.RoleRepository;
 import com.raj.AnimalMovements.repository.UserRepository;
 import com.raj.AnimalMovements.service.UserService;
 
+
+/*
+ * The UserDataLoader class loads user data from a CSV file and populates the database.
+ * It uses the CsvToBean library to parse the CSV file and save the data in the database.
+ */
 @Component
 public class UserDataLoader implements CommandLineRunner, Ordered {
 
@@ -28,6 +33,7 @@ public class UserDataLoader implements CommandLineRunner, Ordered {
         this.roleRepository = roleRepository;
     }
 
+    // The run method is executed when the application starts
     @Override
     public void run(String... args) throws Exception {
         // Check if there's at least one user with the ADMIN role

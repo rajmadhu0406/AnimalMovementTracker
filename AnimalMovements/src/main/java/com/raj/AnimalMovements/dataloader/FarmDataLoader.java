@@ -16,6 +16,10 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * The FarmDataLoader class loads farm data from a CSV file and populates the database.
+ * It uses the CsvToBean library to parse the CSV file and save the data in the database.
+ */
 @Component
 public class FarmDataLoader implements CommandLineRunner, Ordered {
 
@@ -26,6 +30,7 @@ public class FarmDataLoader implements CommandLineRunner, Ordered {
         this.farmService = farmService;
     }
 
+    // This method is executed when the application starts
     @Override
     public void run(String... args) {
         logger.info("Loading farm data...");
@@ -34,6 +39,7 @@ public class FarmDataLoader implements CommandLineRunner, Ordered {
         logger.info("Farm data loaded successfully");
     }
 
+    // This method loads farm data from a CSV file
     public void loadFarmDataFromCsv(String filePath) {
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             CsvToBean<FarmCsvRecord> csvToBean = new CsvToBeanBuilder<FarmCsvRecord>(reader)

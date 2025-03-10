@@ -13,6 +13,11 @@ import org.springframework.security.config.annotation.authentication.configurati
 
 import com.raj.AnimalMovements.repository.UserRepository;
 
+
+/**
+ * The `ApplicationConfiguration` class in Java configures user details, password encoding,
+ * authentication manager, and authentication provider for the application.
+ */
 @Configuration
 public class ApplicationConfiguration {
     private final UserRepository userRepository;

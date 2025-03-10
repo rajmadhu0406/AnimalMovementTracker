@@ -29,6 +29,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Create a new user
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth") 
@@ -37,6 +38,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
+    // Update a user
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth") 
@@ -45,6 +47,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    // Delete a user
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth") 
@@ -53,6 +56,7 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
+    // Get a user by ID
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth") 

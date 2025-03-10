@@ -29,11 +29,14 @@ public class RoleService {
     }
 
     public Role createRole(Role role) {
-        //handling the case where the role already exists
+        // Check if the role already exists by its type
         if (roleRepository.existsByRoleType(role.getRoleType())) {
+            // Log an error message if the role exists
             logger.error("Role already exists: {}", role.getRoleType());
+            // Throw an exception to indicate the role already exists
             throw new IllegalArgumentException("Role already exists!");
         }
+        // Save the new role to the repository
         return roleRepository.save(role);
     }
 

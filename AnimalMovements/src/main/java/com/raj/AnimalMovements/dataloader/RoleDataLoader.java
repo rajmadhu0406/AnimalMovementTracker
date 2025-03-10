@@ -10,6 +10,8 @@ import com.raj.AnimalMovements.model.Role;
 import com.raj.AnimalMovements.model.RoleType;
 import com.raj.AnimalMovements.service.RoleService;
 
+
+// Loads roles into the database
 @Component
 public class RoleDataLoader implements CommandLineRunner, Ordered{
 
@@ -22,6 +24,7 @@ public class RoleDataLoader implements CommandLineRunner, Ordered{
         this.roleService = roleService;
     }
 
+    // Runs when the application starts
     @Override
     public void run(String... args) throws Exception {
         for(RoleType roleType : RoleType.values()) {

@@ -19,7 +19,11 @@ import com.raj.AnimalMovements.service.MovementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
+/*
+ * The MovementController class defines APIs for managing movements in the application.
+ */
 @RestController
 @Validated
 @RequestMapping("/api/movement")
@@ -32,6 +36,7 @@ public class MovementController {
         this.movementService = movementService;
     }
     
+    // // Get all movements
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'VIEWER', 'USER')")
     @SecurityRequirement(name = "bearerAuth")
@@ -40,6 +45,7 @@ public class MovementController {
         return ResponseEntity.ok(movementService.getAllMovements());
     }
 
+    // Get a movement by ID
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'VIEWER', 'USER')")
     @SecurityRequirement(name = "bearerAuth")
@@ -50,6 +56,7 @@ public class MovementController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    //  
     @GetMapping("/premise/origin/{premiseId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'VIEWER', 'USER')")
     @SecurityRequirement(name = "bearerAuth")
@@ -59,6 +66,11 @@ public class MovementController {
         return movements.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(movements);
     }
 
+
+    /**
+     * This function retrieves movements by destination premise ID and is accessible by ADMIN, VIEWER,
+     * and USER roles.
+     */
     @GetMapping("/premise/destination/{premiseId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'VIEWER', 'USER')")
     @SecurityRequirement(name = "bearerAuth")
@@ -68,11 +80,14 @@ public class MovementController {
         return movements.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(movements);
     }
 
+   /**
+    * This Java function creates a new movement and is accessible by users with ADMIN or USER roles.
+    */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create a new movement", description = "Accessible by ADMIN and USER roles")
-    public ResponseEntity<?> createMovement(@RequestBody Movement movement) {
+    public ResponseEntity<?> createMovement(@Valid @RequestBody Movement movement) {
         try {
             Movement savedMovement = movementService.createMovement(movement);
             return ResponseEntity.ok(savedMovement);
@@ -88,6 +103,7 @@ public class MovementController {
     //     return movementService.updateMovement(id, movement);
     // }
 
+    // Delete movement
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")

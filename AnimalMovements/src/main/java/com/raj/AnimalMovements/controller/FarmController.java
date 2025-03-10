@@ -20,6 +20,7 @@ import com.raj.AnimalMovements.service.FarmService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @Validated
@@ -33,16 +34,17 @@ public class FarmController {
         this.farmService = farmService;
     }
 
+    // Create a new farm
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create a new farm", description = "Accessible by ADMIN")
-    public ResponseEntity<Farm> createFarm(@RequestBody Farm farm) {
+    public ResponseEntity<Farm> createFarm(@Valid @RequestBody Farm farm) {
         Farm savedFarm = farmService.saveFarm(farm);
         return ResponseEntity.ok(savedFarm);
     }
 
-    
+    // Get all farms
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'VIEWER', 'USER')")
     @Operation(summary = "Get all farms", description = "Accessible by ADMIN, VIEWER, and USER roles")
@@ -51,6 +53,7 @@ public class FarmController {
         return ResponseEntity.ok(farmService.getAllFarms());
     }
 
+    // Get a farm by ID
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'VIEWER', 'USER')")    
     @Operation(summary = "Get farm by ID", description = "Accessible by ADMIN, VIEWER, and USER roles")
@@ -61,6 +64,7 @@ public class FarmController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Get a farm by premise ID
     @GetMapping("/premise/{premiseId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'VIEWER', 'USER')")    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get farm by premise ID", description = "Accessible by ADMIN, VIEWER, and USER roles")
@@ -73,14 +77,17 @@ public class FarmController {
         }
     }
 
+    // Update a farm
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Farm> updateFarm(@PathVariable Long id, @RequestBody Farm farmDetails) {
+    public ResponseEntity<Farm> updateFarm(@PathVariable Long id, @Valid @RequestBody Farm farmDetails) {
         Farm updatedFarm = farmService.updateFarm(id, farmDetails);
         return ResponseEntity.ok(updatedFarm);
     }
 
+
+    // Delete a farm
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")

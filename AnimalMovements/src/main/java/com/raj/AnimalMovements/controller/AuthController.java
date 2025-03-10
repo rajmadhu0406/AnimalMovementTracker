@@ -19,6 +19,10 @@ import com.raj.AnimalMovements.security.JwtTokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * The AuthController class defines APIs for user authentication, including a login endpoint
+ * that generates and returns a JWT token upon successful authentication.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Auth API", description = "APIs for Authentication")
@@ -29,9 +33,6 @@ public class AuthController {
     private final AuthenticationManager authenticationManager; // Injects the authentication manager.
     private final JwtTokenUtil jwtTokenUtil; // Injects our JWT utility.
 
-    // @Autowired
-    // private UserService userService; // Although not used directly here, it is
-    // needed for authentication by AuthenticationManager.
 
     public AuthController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
         this.authenticationManager = authenticationManager;

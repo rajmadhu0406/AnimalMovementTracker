@@ -16,7 +16,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Decoders;
 
-/* responsible for generating and validating JWT tokens */
+/* Responsible for generating and validating JWT tokens */
 
 @Component
 public class JwtTokenUtil {
@@ -35,18 +35,15 @@ public class JwtTokenUtil {
     public String generateJwtToken(Authentication authentication) {
         // Casts the authentication principal to Spring Security's User (which implements UserDetails).
 
-        // org.springframework.security.core.userdetails.UserDetails userPrincipal =
-        //         (org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal();
-
         User userPrincipal = (User) authentication.getPrincipal();
 
 
         // Build and return a JWT token:
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername()) // Sets the subject (username) in the token.
-                .claim("userId", userPrincipal.getId())
-                .claim("role", userPrincipal.getRole().getRoleType())
-                .claim("roleId", userPrincipal.getRole().getId())
+                .claim("userId", userPrincipal.getId()) // Sets the user ID claim in the token.
+                .claim("role", userPrincipal.getRole().getRoleType()) // Sets the user role claim in the token.
+                .claim("roleId", userPrincipal.getRole().getId()) // Sets the user role ID claim in the token.
                 .setIssuedAt(new Date()) // Sets the token issue time.
                 .setExpiration(new Date(new Date().getTime() + jwtExpirationMs)) // Sets token expiration time.
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS512)
@@ -60,7 +57,7 @@ public class JwtTokenUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .getSubject(); // Returns the subject (username) from the token.
     }
 
     public Long getUserIdFromJwtToken(String token) {
@@ -68,8 +65,8 @@ public class JwtTokenUtil {
                 .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
                 .build()
                 .parseClaimsJws(token)
-                .getBody()  
-                .get("userId", Long.class);
+                .getBody()
+                .get("userId", Long.class); // Returns the user ID from the token.
     }
 
     public String getRoleFromJwtToken(String token) {
@@ -78,7 +75,7 @@ public class JwtTokenUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("role", String.class);
+                .get("role", String.class); // Returns the user role from the token.
     }
 
     public Long getRoleIdFromJwtToken(String token) {
@@ -87,7 +84,7 @@ public class JwtTokenUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("roleId", Long.class);
+                .get("roleId", Long.class); // Returns the user role ID from the token.
     }   
 
     // Validates the JWT token and returns true if it is valid.
@@ -97,8 +94,9 @@ public class JwtTokenUtil {
             Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8))).parseClaimsJws(authToken);
             return true;
         } catch (Exception e) {
-                logger.error("Invalid JWT token: {}", e.getMessage());
+            logger.error("Invalid JWT token: {}", e.getMessage());
         }
         return false;
     }
 }
+

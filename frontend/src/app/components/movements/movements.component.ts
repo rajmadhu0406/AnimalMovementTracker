@@ -102,6 +102,7 @@ export class MovementsComponent implements OnInit {
     this.showCreateForm = !this.showCreateForm;
   }
 
+  // Check if the user has the required role
   hasPermission(allowedRoles: string): boolean {
     return this.authService.hasPermission([allowedRoles]);
   }

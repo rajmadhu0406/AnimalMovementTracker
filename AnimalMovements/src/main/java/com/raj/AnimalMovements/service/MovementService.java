@@ -28,33 +28,41 @@ public class MovementService {
 
     // Create a new movement
     public Movement createMovement(Movement movement) {
+        // Ensure origin farm exists
         Farm originFarm = farmRepository.findByPremiseId(movement.getNewOriginFarm().getPremiseId());
         if (originFarm == null) {
             throw new RuntimeException("Origin farm not found: " + movement.getNewOriginFarm().getPremiseId());
         }
 
+        // Ensure destination farm exists
         Farm destinationFarm = farmRepository.findByPremiseId(movement.getNewDestinationFarm().getPremiseId());
         if (destinationFarm == null) {
             throw new RuntimeException("Destination farm not found: " + movement.getNewDestinationFarm().getPremiseId());
         }
 
+        // Check that origin and destination farms are different
         if (originFarm.getPremiseId().equals(destinationFarm.getPremiseId())) {
             throw new RuntimeException("Origin and destination farms cannot be the same");
         }
 
+        // Check that origin farm has enough animals to move
         if(originFarm.getTotalAnimal() < movement.getNewNumItemsMoved()) {
             throw new RuntimeException("Origin farm does not have enough animals to move");
         }
 
+        // Update origin and destination farm animal counts
         originFarm.setTotalAnimal(originFarm.getTotalAnimal() - movement.getNewNumItemsMoved());
         destinationFarm.setTotalAnimal(destinationFarm.getTotalAnimal() + movement.getNewNumItemsMoved());
-        
+
+        // Save the farms
         farmRepository.save(originFarm);
         farmRepository.save(destinationFarm);
 
+        // Set the origin and destination farms on the movement
         movement.setNewOriginFarm(originFarm);
         movement.setNewDestinationFarm(destinationFarm);
 
+        // Save the movement
         return movementRepository.save(movement);
     }
 
@@ -163,4 +171,5 @@ public class MovementService {
     }
 
 }
+
 

@@ -12,6 +12,10 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import com.raj.AnimalMovements.security.JwtRequestFilter;
 
+/**
+ * The `SecurityConfig` class in Java configures security settings for a web application, including JWT
+ * authentication and CORS configuration.
+ */
 @Configuration
 @EnableMethodSecurity // Replaces the deprecated @EnableGlobalMethodSecurity
 public class SecurityConfig {
@@ -23,24 +27,11 @@ public class SecurityConfig {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
-    // @Bean
-    // public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenUtil
-    // jwtTokenUtil, UserService userService) {
-    // return new JwtAuthenticationFilter(jwtTokenUtil, userService);
-    // }
-
-    // @Bean
-    // public PasswordEncoder passwordEncoder() {
-    // return new BCryptPasswordEncoder();
-    // }
-
-    // @Bean
-    // public AuthenticationManager
-    // authenticationManager(AuthenticationConfiguration authConfig) throws
-    // Exception {
-    // return authConfig.getAuthenticationManager();
-    // }
-
+    /**
+     * The `securityFilterChain` function configures security settings for HTTP requests in a Java
+     * application, including authorization rules, session management, JWT filtering, and CORS
+     * configuration.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -71,67 +62,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-    // @Bean
-    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
-    // Exception {
-    // http.csrf().disable()
-    // .authorizeHttpRequests()
-    // .anyRequest().permitAll(); // Allow all requests without authentication
-    // return http.build();
-    // }
-
-    // @Bean
-    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
-    // Exception {
-    // http.csrf().disable()
-    // .authorizeHttpRequests()
-    // .requestMatchers("/api/auth/**").permitAll() // Public endpoints
-    // .requestMatchers("/swagger-ui/**").permitAll() // Public endpoints
-    // .requestMatchers("/v3/api-docs/**").permitAll() // Public endpoints
-    // .anyRequest().authenticated() // All other endpoints require authentication
-    // .and()
-    // .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    // .and()
-    // .addFilterBefore(new JwtRequestFilter(),
-    // UsernamePasswordAuthenticationFilter.class);
-
-    // return http.build();
-    // }
-    // @Bean
-    // public SecurityFilterChain securityFilterChain(HttpSecurity http,
-    // JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
-    // http
-    // .csrf(csrf -> csrf.disable())
-    // .sessionManagement(session ->
-    // session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-    // .authorizeHttpRequests(auth -> auth
-    // // Public endpoints
-    // .requestMatchers("/api/public/**").permitAll()
-    // .requestMatchers("/api/auth/test").permitAll()
-    // .requestMatchers("/swagger-ui/**").permitAll()
-
-    // // Endpoints requiring authentication but no specific role
-    // .requestMatchers("/api/user/**").authenticated()
-
-    // // Role-based endpoints
-    // .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-    // // All other requests require authentication
-    // .anyRequest().authenticated()
-    // )
-    // // Add the JWT authentication filter before Spring Security's
-    // UsernamePasswordAuthenticationFilter.
-    // .addFilterBefore(jwtAuthenticationFilter,
-    // UsernamePasswordAuthenticationFilter.class)
-    // .cors(cors -> cors.configurationSource(request -> {
-    // CorsConfiguration corsConfig = new CorsConfiguration();
-    // corsConfig.addAllowedOrigin("*");
-    // corsConfig.addAllowedMethod("*");
-    // corsConfig.addAllowedHeader("*");
-    // return corsConfig;
-    // }));
-
-    // return http.build();
-    // }
 }

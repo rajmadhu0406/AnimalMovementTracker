@@ -40,7 +40,10 @@ public class FarmService {
         return farmRepository.findByPremiseId(premiseId);
     }
 
-    // Update a farm
+    /**
+     * The `updateFarm` function updates the details of a farm entity based on the
+     * provided farmDetails object.
+     */
     public Farm updateFarm(Long id, Farm farmDetails) {
         Farm farm = farmRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Farm not found with id: " + id));

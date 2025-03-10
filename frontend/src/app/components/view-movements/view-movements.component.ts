@@ -117,7 +117,6 @@ export class ViewMovementsComponent implements OnInit {
     this.farms.forEach(farm => {
       const farmMarker = L.marker([farm.latitude, farm.longitude], {
         icon: L.icon({
-          // iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png',
           iconUrl: 'assets/farm-map-icon.png',
           iconSize: [25, 41],
           iconAnchor: [12, 41],

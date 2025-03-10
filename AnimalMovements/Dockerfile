@@ -19,8 +19,6 @@ COPY src ./src
 # Expose the port that the application runs on
 EXPOSE 8080
 
-# Run the Spring Boot application in debug mode on port 5005
-CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8080"]
 
-# # Run the Spring Boot application
-# CMD ["./mvnw", "spring-boot:run"]
+# # Run the Spring Boot application in debug mode on port 5005
+CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8080"]

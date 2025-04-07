@@ -1,9 +1,6 @@
 # Animal Movement Tracker
 
 
-**I'm applying for the backend position.**
-
-
 ## 1. Project Overview
 
 - Providing role-based authentication and authorization.
